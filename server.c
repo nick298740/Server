@@ -33,8 +33,8 @@ void readMessage(){
     n = read(conn_fd,buffer, 2000);
 
     if (n < 0) {
-		perror("ERROR reading from socket");
- 	    //exit(1);
+	perror("ERROR reading from socket");
+ 	//exit(1);
     }
 }
 
@@ -98,36 +98,33 @@ int isCurrentlyRequestedIPCached(){
 		int lineCount = 1;
 	    char line[20000];
 	    while(fgets(line, sizeof line, cachedFileList)){ // while we have not reached end of file (EOF)...
-			//printf("Inserted line number %d\n", lineCount);
+		//printf("Inserted line number %d\n", lineCount);
 
-			printf("\nHere is currently requestedIP: %s,      here is line: %s\n", currentlyRequestedIP, line);			
-			if(strstr(line, currentlyRequestedIP)){
-				
-				const char space[2] = " ";
-				int i, positionOfSpace = -1;
-				for(i = 0; i < strlen(line); i++){
-					if(line[i] == space[0]){
-						printf("\nHere is the char at %d : %c", i, line[i]);
+		printf("\nHere is currently requestedIP: %s,      here is line: %s\n", currentlyRequestedIP, line);			
+		if(strstr(line, currentlyRequestedIP)){
+			
+			const char space[2] = " ";
+			int i, positionOfSpace = -1;
+			for(i = 0; i < strlen(line); i++){
+				if(line[i] == space[0]){
+					printf("\nHere is the char at %d : %c", i, line[i]);
 
-						positionOfSpace = ++i;
-						break;
-					}
+					positionOfSpace = ++i;
+					break;
 				}
-				
-				
-				strncpy(fileToOpen, line + positionOfSpace, strlen(line));
-				//temp[strlen(line)] = 
-				//strcpy(fileToOpen, temp);
-				//printf("\n\nhere is temp: %s\n\n", temp);//
-				fileToOpen[strlen(fileToOpen) - 1] = '\0';
-				strcat(fileToOpen, ".html");
-				printf("\n\nhere is file to open: %s\n\n", fileToOpen);
-
-				return 0;
 			}
-			//strcat(buffer, line);
-			lineCount++;
-	   }
+			
+			
+			strncpy(fileToOpen, line + positionOfSpace, strlen(line));
+			
+			fileToOpen[strlen(fileToOpen) - 1] = '\0';
+			strcat(fileToOpen, ".html");
+			printf("\n\nhere is file to open: %s\n\n", fileToOpen);
+
+			return 0;
+		}
+		lineCount++;
+	    }
 	}
 	
 	return 1;
@@ -147,11 +144,9 @@ char getFileContents(){
 	
 	    int lineCount = 1;
 	    char line[20000];
-	    while(fgets(line, sizeof line, file)){ // while we have not reached end of file (EOF)...
-			//printf("Inserted line number %d\n", lineCount);
-			
-			strcat(buffer, line);
-			lineCount++;
+	    while(fgets(line, sizeof line, file)){ // while we have not reached end of file (EOF)...			
+		strcat(buffer, line);
+		lineCount++;
 	   }
 	}
 }
@@ -169,81 +164,80 @@ void getBlackListFileContents(){
 	
 	   int lineCount = 1;
 	   char line[2000];
-	  // char * token;
 	   while(fgets(line, sizeof line, file)){ // while we have not reached end of file (EOF)...
-			//printf("Inserted line number %d\n", lineCount);
-			//printf("\nHere is the inserted line: %s\n", line);
-			
-			const char space[2] = " ";
-			int i, positionOfSpace = -1;
-			for(i = 0; i < strlen(line); i++){
-				if(line[i] == space[0]){
-					printf("\nHere is the char at %d : %c", i, line[i]);
+		//printf("Inserted line number %d\n", lineCount);
+		//printf("\nLine to insert: %s\n", line);
+		
+		const char space[2] = " ";
+		int i, positionOfSpace = -1;
+		for(i = 0; i < strlen(line); i++){
+			if(line[i] == space[0]){
+				printf("\nchar at %d : %c", i, line[i]);
 
-					positionOfSpace = ++i;
-					break;
-				}
+				positionOfSpace = ++i;
+				break;
 			}
+		}
 			
-			char temp[1000];
-			strncpy(temp, line, positionOfSpace - 1);
-			strcpy(blackListedSite[blackListIndex], temp);
-			temp[strlen(blackListedSite[blackListIndex] - 1)] = '\0';
-			
-			printf("\nBlackListedIndex : %d, blackListedSite : %s, temp value: %s, line value: %s, position value: %d\n", blackListIndex, blackListedSite[blackListIndex], temp, line, positionOfSpace);						
-			
-			char startTime[15]; // note 6, not 5, there's one there for the null terminator
-			strncpy(startTime, line + positionOfSpace, strlen(line));
-			startTime[14] = '\0'; // place the null terminator
-			
-			char endTime[15];
-			strncpy(endTime, line + positionOfSpace + 15, strlen(line));
-			endTime[14] = '\0';
-	
-			printf("\nHere is first time: %s ...  here is second time: %s\n", startTime, endTime);
-			
-			// Convert first and second time to comparable
-			long long firstTime = 0.0;
-			sscanf(startTime, "%lld", &firstTime);
-			printf("\nhere is start time: %lld\n", firstTime);
-			
-			// Set the start value for blacklist into index corresponding with blacklisted site
-			blackListedStartTime[blackListIndex] = firstTime;
-			
-			long long secondTime = 0.0;
-			sscanf(endTime, "%lld", &secondTime);
-			printf("\nhere is end time: %lld\n", secondTime);
-			
-			// Set the end value for blacklist into index corresponding with blacklisted site
-			blackListedEndTime[blackListIndex] = secondTime;
-			
-			// Get the current time and calculate integer comparable
-			currentTimeLong = 1.0;
-			currentTimeLong = currentTimeLong * (dateTime.tm_year + 1900);
-			//printf("\n1 : here is: %lld\n   dt: %d\n", currentTimeLong, dateTime.tm_year);
+		char temp[1000];
+		strncpy(temp, line, positionOfSpace - 1);
+		strcpy(blackListedSite[blackListIndex], temp);
+		temp[strlen(blackListedSite[blackListIndex] - 1)] = '\0';
+		
+		printf("\nBlackListedIndex : %d, blackListedSite : %s, temp value: %s, line value: %s, position value: %d\n", blackListIndex, blackListedSite[blackListIndex], temp, line, positionOfSpace);						
+		
+		char startTime[15]; // note 6, not 5, there's one there for the null terminator
+		strncpy(startTime, line + positionOfSpace, strlen(line));
+		startTime[14] = '\0'; // place the null terminator
+		
+		char endTime[15];
+		strncpy(endTime, line + positionOfSpace + 15, strlen(line));
+		endTime[14] = '\0';
 
-			currentTimeLong = currentTimeLong * 10000000000; // Add year to left most			
-			//printf("\n2 : here is: %lld\n", currentTimeLong);
+		printf("\nHere is first time: %s ...  here is second time: %s\n", startTime, endTime);
+		
+		// Convert first and second time to comparable
+		long long firstTime = 0.0;
+		sscanf(startTime, "%lld", &firstTime);
+		printf("\nhere is start time: %lld\n", firstTime);
+		
+		// Set the start value for blacklist into index corresponding with blacklisted site
+		blackListedStartTime[blackListIndex] = firstTime;
+		
+		long long secondTime = 0.0;
+		sscanf(endTime, "%lld", &secondTime);
+		printf("\nhere is end time: %lld\n", secondTime);
+		
+		// Set the end value for blacklist into index corresponding with blacklisted site
+		blackListedEndTime[blackListIndex] = secondTime;
+		
+		// Get the current time and calculate integer comparable
+		currentTimeLong = 1.0;
+		currentTimeLong = currentTimeLong * (dateTime.tm_year + 1900);
+		//printf("\n1 : here is: %lld\n   dt: %d\n", currentTimeLong, dateTime.tm_year);
 
-			currentTimeLong = currentTimeLong + ((dateTime.tm_mon + 1) * 100000000); // Add month to left most			
-			//printf("\n3 : here is: %lld\n", currentTimeLong);
+		currentTimeLong = currentTimeLong * 10000000000; // Add year to left most			
+		//printf("\n2 : here is: %lld\n", currentTimeLong);
 
-			currentTimeLong = currentTimeLong + (dateTime.tm_mday * 1000000); // Add day to left most
-			//printf("\n4 : here is: %lld\n", currentTimeLong);
-			
-			
-			currentTimeLong = currentTimeLong + (dateTime.tm_hour * 10000); // Add hour to left most
-			//printf("\n5 : here is: %lld\n", currentTimeLong);
+		currentTimeLong = currentTimeLong + ((dateTime.tm_mon + 1) * 100000000); // Add month to left most			
+		//printf("\n3 : here is: %lld\n", currentTimeLong);
 
-			currentTimeLong = currentTimeLong + (dateTime.tm_min * 100); // Add min to left most
-			//printf("\n6 : here is: %lld\n", currentTimeLong);
+		currentTimeLong = currentTimeLong + (dateTime.tm_mday * 1000000); // Add day to left most
+		//printf("\n4 : here is: %lld\n", currentTimeLong);
+		
+		
+		currentTimeLong = currentTimeLong + (dateTime.tm_hour * 10000); // Add hour to left most
+		//printf("\n5 : here is: %lld\n", currentTimeLong);
 
-			currentTimeLong = currentTimeLong + (dateTime.tm_sec); // Add hour to left most
-			//printf("\n7 : here is: %lld\n", currentTimeLong);
+		currentTimeLong = currentTimeLong + (dateTime.tm_min * 100); // Add min to left most
+		//printf("\n6 : here is: %lld\n", currentTimeLong);
 
-			strcat(buffer, line);
-			lineCount++;
-			blackListIndex++;
+		currentTimeLong = currentTimeLong + (dateTime.tm_sec); // Add hour to left most
+		//printf("\n7 : here is: %lld\n", currentTimeLong);
+
+		strcat(buffer, line);
+		lineCount++;
+		blackListIndex++;
 	   }
 	}
 }
@@ -296,7 +290,7 @@ void requestURL(){
 }
 
 void listenForConnection(){
-	 /* AF_INET - IPv4 IP , Type of socket, protocol*/
+    // AF_INET - IPv4 IP, Type of socket, protocol
     listen_fd = socket(AF_INET, SOCK_STREAM, 0);
  
     bzero(&servaddr, sizeof(servaddr));
@@ -305,50 +299,47 @@ void listenForConnection(){
     servaddr.sin_addr.s_addr = htons(INADDR_ANY);
     servaddr.sin_port = htons(22006);
  
-    /* Binds the above details to the socket */
-	bind(listen_fd,  (struct sockaddr *) &servaddr, sizeof(servaddr));
-	/* Start listening to incoming connections */
-	listen(listen_fd, 10);
+    // Binds the above details to the socket 
+    bind(listen_fd,  (struct sockaddr *) &servaddr, sizeof(servaddr));
+    // Start listening to incoming connections 
+    listen(listen_fd, 10);
 }
  
 int main(){
     bzero(buffer, 2000000);
-	setDateAndTime();	 // Sets current Date and Time 
-	setBlackList();
+    setDateAndTime(); // Sets current Date and Time 
+    setBlackList();
 	  
-	printf("\nListening for connection...\n");
-	listenForConnection(); 
+    printf("\nListening for connection...\n");
+    listenForConnection(); 
 	  
     // Accepts an incoming connection 
-	conn_fd = accept(listen_fd, (struct sockaddr*)NULL, NULL);
+    conn_fd = accept(listen_fd, (struct sockaddr*)NULL, NULL);
 	  
-	printf("\n\nAccepted connection, waiting for message...\n\n");
-	readMessage();
-	//printf("\n\nHere is the url: %s\n\n", buffer);
+    printf("\n\nAccepted connection, waiting for message...\n\n");
+    readMessage();
+    //printf("\n\nHere is the url: %s\n\n", buffer);
 	  
-	strcpy(currentlyRequestedIP, buffer);
-	//printf("\nHere is currentlyRequestedIP: %s\n", currentlyRequestedIP);
+    strcpy(currentlyRequestedIP, buffer);
+    //printf("\nHere is currentlyRequestedIP: %s\n", currentlyRequestedIP);
 
-	if(isCurrentlyRequestedIPCached() == 0){
-		printf("\n\nRequested URL was: %s, this URL is cached.\n\n", currentlyRequestedIP);
+    if(isCurrentlyRequestedIPCached() == 0){
+	    printf("\n\nRequested URL was: %s, this URL is cached.\n\n", currentlyRequestedIP);
+	    getFileContents();
+	    writeMessage();
+    } else {
+  
+	if(compareRequestedIpWithBlackList() == 0){
+		requestURL();
 		getFileContents();
 		writeMessage();
+		
 	} else {
-	  
-		if(compareRequestedIpWithBlackList() == 0){
-			requestURL();
-			getFileContents();
-			writeMessage();
-			
-		} else {
-			printf("\nAttempted to connect to a blacklisted site.\n");
-			strcpy(buffer, "Attempted to connect to a blacklisted site. Permission denied.");
-			writeMessage();
-		}
+		printf("\nAttempted to connect to a blacklisted site.\n");
+		strcpy(buffer, "Attempted to connect to a blacklisted site. Permission denied.");
+		writeMessage();
 	}
-    // strcpy(str, "Hello world \n\r\0");
-    // write(conn_fd, str, strlen(str)); // write to the client
-    
-	close (conn_fd); //close the connection
-   
+    }
+
+    close (conn_fd); //close the connection
 }
